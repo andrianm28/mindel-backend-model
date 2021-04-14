@@ -69,6 +69,7 @@ async def fetch_energies():
 
 @app.post("/energies", response_model=Energies, status_code=201)
 async def create_energy(entry: EnergyEntry):
+    print(entry)
     gID     = str(uuid.uuid1())
     gDate   = str(datetime.datetime.now())
     query   = energies.insert().values(
