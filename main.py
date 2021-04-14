@@ -111,3 +111,6 @@ async def energy():
 
 #     response_object = {"ticker": ticker, "forecast": convert(prediction_list)}
 #     return response_object
+
+if __name__ == "__main__":
+    app.run()
