@@ -2,7 +2,7 @@ fastapi==0.58.1
 gunicorn==20.0.4
 uvicorn==0.11.5
 
-pystan==pystan==2.19.1.1
+pystan==2.19.1.1
 fbprophet==0.6
 joblib==0.16.0
 pandas==1.0.5
