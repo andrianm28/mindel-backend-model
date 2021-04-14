@@ -5,7 +5,7 @@ import databases, sqlalchemy, datetime, uuid
 from typing import List
 
 ## Postgres Database
-DATABASE_URL = "postgresql://andrianm28:@127.0.0.1:5432/semhas"
+DATABASE_URL = "postgres://podbrtrvupzwrs:3ae577a84fe32e348dd104312d8d6cd7a60b90e063c3803cad90c8b341278892@ec2-34-233-0-64.compute-1.amazonaws.com:5432/d8mf2fka342hhv"
 database = databases.Database(DATABASE_URL)
 metadata = sqlalchemy.MetaData()
 
