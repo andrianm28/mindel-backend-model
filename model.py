@@ -14,7 +14,7 @@ def train(ticker="MSFT"):
     # data = yf.download("^GSPC", "2008-01-01", TODAY.strftime("%Y-%m-%d"))
     data = yf.download(ticker, "2020-01-01", TODAY.strftime("%Y-%m-%d"))
     data.head()
-    data["Adj Close"].plot(title=f"{ticker} Stock Adjusted Closing Price")
+    # data["Adj Close"].plot(title=f"{ticker} Stock Adjusted Closing Price")
 
     df_forecast = data.copy()
     df_forecast.reset_index(inplace=True)
@@ -43,8 +43,8 @@ def predict(ticker="MSFT", days=7):
 
     forecast = model.predict(df)
 
-    model.plot(forecast).savefig(f"{ticker}_plot.png")
-    model.plot_components(forecast).savefig(f"{ticker}_plot_components.png")
+    # model.plot(forecast).savefig(f"{ticker}_plot.png")
+    # model.plot_components(forecast).savefig(f"{ticker}_plot_components.png")
 
     return forecast.tail(days).to_dict("records")
 
