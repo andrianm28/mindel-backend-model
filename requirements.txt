@@ -49,4 +49,3 @@ uuid==1.30
 uvicorn==0.13.4
 # yfinance==0.1.59
 zope.interface==5.3.0
-pytz
