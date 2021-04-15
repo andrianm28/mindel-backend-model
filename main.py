@@ -1,9 +1,25 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from fastapi import (
+    FastAPI, 
+    BackgroundTasks, 
+    UploadFile, File, 
+    Form, 
+    Query,
+    Body,
+    Depends,
+    HTTPException
+)
+from pydantic import BaseModel, Field, EmailStr
 # from model import train, convert, predict
 import databases, sqlalchemy, datetime, uuid
 from typing import List
 import pytz
+
+from starlette.responses import JSONResponse
+from starlette.requests import Request
+from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
+from fastapi_mail.email_utils import DefaultChecker
+
+import telegram_send
 
 # Timezone
 
@@ -22,7 +38,9 @@ energies = sqlalchemy.Table(
     sqlalchemy.Column("energy", sqlalchemy.Float),
     sqlalchemy.Column("power", sqlalchemy.Float),
     sqlalchemy.Column("voltage", sqlalchemy.Float),
-    sqlalchemy.Column("current", sqlalchemy.Float)
+    sqlalchemy.Column("current", sqlalchemy.Float),
+    sqlalchemy.Column("frequency", sqlalchemy.Float),
+    sqlalchemy.Column("power_factor", sqlalchemy.Float)
 )
 
 engine = sqlalchemy.create_engine(
@@ -30,10 +48,26 @@ engine = sqlalchemy.create_engine(
 )
 metadata.create_all(engine)
 
-
 app = FastAPI()
 
+
+
 # pydantic models
+
+class EmailSchema(BaseModel):
+    email: List[EmailStr]
+
+
+conf = ConnectionConfig(
+    MAIL_USERNAME = "andrianm28",
+    MAIL_PASSWORD = "lolipoplolipop",
+    MAIL_FROM = "electrification.io@gmail.com",
+    MAIL_PORT = 587,
+    MAIL_SERVER = "smtp.gmail.com",
+    MAIL_FROM_NAME="Electricist",
+    MAIL_TLS = True,
+    MAIL_SSL = False
+)
 
 class StockIn(BaseModel):
     ticker: str
@@ -49,12 +83,16 @@ class Energies(BaseModel):
     power       :float
     voltage     :float
     current     :float
+    frequency   :float
+    power_factor:float
 
 class EnergyEntry(BaseModel):
     energy  :float = Field(..., example=0.001)
     power   :float = Field(..., example=30.0)
     voltage :float = Field(..., example=220.25)
     current :float = Field(..., example=0.05)
+    frequency :float = Field(..., example=50)
+    power_factor :float = Field(..., example=0.9)
 
 
 @app.on_event("startup")
@@ -67,6 +105,18 @@ async def shutdown():
 
 # routes
 
+@app.post("/emailbackground")
+async def send_in_background(
+    background_tasks: BackgroundTasks,
+    email: EmailSchema
+    ) -> JSONResponse:
+
+    power = 20.2
+
+    telegram_send.send(messages=["Wow that was easy! {} ".format(power)])
+
+    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+
 @app.get("/energies", response_model=List[Energies])
 async def fetch_energies():
     query = energies.select()
@@ -74,6 +124,7 @@ async def fetch_energies():
 
 @app.post("/energies", response_model=Energies, status_code=201)
 async def create_energy(entry: EnergyEntry):
+
     gID     = str(uuid.uuid1())
     gDate   = str(datetime.datetime.now(tz=tz))
     query   = energies.insert().values(
@@ -82,13 +133,15 @@ async def create_energy(entry: EnergyEntry):
         energy      = entry.energy,
         power       = entry.power,
         voltage     = entry.voltage,
-        current     = entry.current
+        current     = entry.current,
+        frequency   = entry.frequency,
+        power_factor= entry.power_factor
     )
     await database.execute(query)
     return {
         "id": gID,
-        **entry.dict(),
-        "created_at": gDate
+        "created_at": gDate,
+        **entry.dict()
     }
 
 @app.get("/ping")
