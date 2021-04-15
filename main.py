@@ -9,10 +9,10 @@ from fastapi import (
     HTTPException
 )
 from pydantic import BaseModel, Field, EmailStr
-# from model import train, convert, predict
+from model import train, convert, predict
 import databases, sqlalchemy, datetime, uuid
 from typing import List
-import pytz
+import pytz, json
 
 from starlette.responses import JSONResponse
 from starlette.requests import Request
@@ -20,6 +20,10 @@ from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
 from fastapi_mail.email_utils import DefaultChecker
 
 import telegram_send
+
+import pandas as pd
+
+from fastapi.encoders import jsonable_encoder
 
 # Timezone
 
@@ -120,7 +124,10 @@ async def send_in_background(
 @app.get("/energies", response_model=List[Energies])
 async def fetch_energies():
     query = energies.select()
-    return await database.fetch_all(query)
+    lists = await database.fetch_all(query)
+    lists_json = jsonable_encoder(lists)
+    print(lists_json)
+    return lists
 
 @app.post("/energies", response_model=Energies, status_code=201)
 async def create_energy(entry: EnergyEntry):
@@ -153,22 +160,22 @@ async def energy():
     return {"succes"}
 
 
-# @app.post("/predict", response_model=StockOut, status_code=200)
-# def get_prediction(payload: StockIn):
-#     train("FB")
-#     train("AAPL")
-#     train("GOOGL")
-#     train("MSFT")
+@app.post("/predict", response_model=StockOut, status_code=200)
+def get_prediction(payload: StockIn):
+    train("FB")
+    train("AAPL")
+    train("GOOGL")
+    train("MSFT")
 
-#     ticker = payload.ticker
+    ticker = payload.ticker
 
-#     prediction_list = predict(ticker)
+    prediction_list = predict(ticker)
 
-#     if not prediction_list:
-#         raise HTTPException(status_code=400, detail="Model not found.")
+    if not prediction_list:
+        raise HTTPException(status_code=400, detail="Model not found.")
 
-#     response_object = {"ticker": ticker, "forecast": convert(prediction_list)}
-#     return response_object
+    response_object = {"ticker": ticker, "forecast": convert(prediction_list)}
+    return response_object
 
 if __name__ == "__main__":
     app.run()
