@@ -129,6 +129,14 @@ async def fetch_energies():
     print(lists_json)
     return lists
 
+@app.get("/current-energy", response_model= Energies)
+async def fetch_current_energy():
+    query = energies.select()
+    lists = await database.fetch_all(query)
+    lists_json = jsonable_encoder(lists)
+    print(lists_json)
+    return lists_json[len(lists_json)-1] 
+
 @app.post("/energies", response_model=Energies, status_code=201)
 async def create_energy(entry: EnergyEntry):
 
@@ -154,10 +162,6 @@ async def create_energy(entry: EnergyEntry):
 @app.get("/ping")
 async def pong():
     return {"ping": "pong!"}
-
-@app.post("/energy", status_code=201)
-async def energy():
-    return {"succes"}
 
 
 @app.post("/predict", response_model=StockOut, status_code=200)
