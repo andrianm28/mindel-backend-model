@@ -16,8 +16,8 @@ import pytz, json
 
 from starlette.responses import JSONResponse
 from starlette.requests import Request
-from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
-from fastapi_mail.email_utils import DefaultChecker
+# from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
+# from fastapi_mail.email_utils import DefaultChecker
 
 import telegram_send
 
@@ -62,16 +62,16 @@ class EmailSchema(BaseModel):
     email: List[EmailStr]
 
 
-conf = ConnectionConfig(
-    MAIL_USERNAME = "andrianm28",
-    MAIL_PASSWORD = "lolipoplolipop",
-    MAIL_FROM = "electrification.io@gmail.com",
-    MAIL_PORT = 587,
-    MAIL_SERVER = "smtp.gmail.com",
-    MAIL_FROM_NAME="Electricist",
-    MAIL_TLS = True,
-    MAIL_SSL = False
-)
+# conf = ConnectionConfig(
+#     MAIL_USERNAME = "andrianm28",
+#     MAIL_PASSWORD = "lolipoplolipop",
+#     MAIL_FROM = "electrification.io@gmail.com",
+#     MAIL_PORT = 587,
+#     MAIL_SERVER = "smtp.gmail.com",
+#     MAIL_FROM_NAME="Electricist",
+#     MAIL_TLS = True,
+#     MAIL_SSL = False
+# )
 
 class StockIn(BaseModel):
     ticker: str
@@ -109,17 +109,17 @@ async def shutdown():
 
 # routes
 
-@app.post("/emailbackground")
-async def send_in_background(
-    background_tasks: BackgroundTasks,
-    email: EmailSchema
-    ) -> JSONResponse:
+# @app.post("/emailbackground")
+# async def send_in_background(
+#     background_tasks: BackgroundTasks,
+#     email: EmailSchema
+#     ) -> JSONResponse:
 
-    power = 20.2
+#     power = 20.2
 
-    telegram_send.send(messages=["Wow that was easy! {} ".format(power)])
+#     telegram_send.send(messages=["Wow that was easy! {} ".format(power)])
 
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+#     return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
 @app.get("/energies", response_model=List[Energies])
 async def fetch_energies():
