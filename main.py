@@ -8,9 +8,11 @@ from fastapi import (
     Depends,
     HTTPException
 )
+from datetime import datetime
 from pydantic import BaseModel, Field, EmailStr
 from model import train, convert, predict
-import databases, sqlalchemy, datetime, uuid
+import databases, datetime, uuid, sqlalchemy
+from sqlalchemy import desc
 from typing import List
 import pytz, json
 
@@ -123,19 +125,19 @@ async def shutdown():
 
 @app.get("/energies", response_model=List[Energies])
 async def fetch_energies():
-    query = energies.select()
+    query = energies.select().order_by(energies.c.created_at.desc())
     lists = await database.fetch_all(query)
     lists_json = jsonable_encoder(lists)
     print(lists_json)
     return lists
 
-@app.get("/current-energy", response_model= Energies)
-async def fetch_current_energy():
-    query = energies.select()
-    lists = await database.fetch_all(query)
-    lists_json = jsonable_encoder(lists)
-    print(lists_json)
-    return lists_json[len(lists_json)-1] 
+# @app.get("/current-energy", response_model= Energies)
+# async def fetch_current_energy():
+#     query = energies.select()
+#     lists = await database.fetch_all(query)
+#     lists_json = jsonable_encoder(lists)
+#     print(lists_json[len(lists_json)-1])
+#     return lists_json[len(lists_json)-1] 
 
 @app.post("/energies", response_model=Energies, status_code=201)
 async def create_energy(entry: EnergyEntry):
