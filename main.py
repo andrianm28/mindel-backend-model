@@ -131,6 +131,96 @@ async def fetch_energies():
     print(lists_json)
     return lists
 
+@app.get("/monthly_energies")
+async def fetch_monthly_energies():
+    monthly_e = [
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Aug",
+            "month_full": "August",
+            "monthly_power": 528.0,
+            "monthly_budget": 700000.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Jul",
+            "month_full": "July",
+            "monthly_power": 500.0,
+            "monthly_budget": 500000.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Jun",
+            "month_full": "June",
+            "monthly_power": 548.0,
+            "monthly_budget": 700000.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "May",
+            "month_full": "May",
+            "monthly_power": 436.0,
+            "monthly_budget": 500000.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Apr",
+            "month_full": "April",
+            "monthly_power": 429.0,
+            "monthly_budget": 500000.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Mar",
+            "month_full": "March",
+            "monthly_power": 361.0,
+            "monthly_budget": 350000.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Feb",
+            "month_full": "February",
+            "monthly_power": 0.0,
+            "monthly_budget": 0.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Jan",
+            "month_full": "January",
+            "monthly_power": 0.0,
+            "monthly_budget": 0.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Dec",
+            "month_full": "December",
+            "monthly_power": 0.0,
+            "monthly_budget": 0.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Nov",
+            "month_full": "November",
+            "monthly_power": 0.0,
+            "monthly_budget": 0.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Oct",
+            "month_full": "October",
+            "monthly_power": 0.0,
+            "monthly_budget": 0.0
+        },
+        {
+            "id": "2ebeb9e2-9d7d-11eb-a902-acde48001122",
+            "month_simple": "Sep",
+            "month_full": "September",
+            "monthly_power": 0.0,
+            "monthly_budget": 0.0
+        }
+    ]
+    return monthly_e
+
 # @app.get("/current-energy", response_model= Energies)
 # async def fetch_current_energy():
 #     query = energies.select()
