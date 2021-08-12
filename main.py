@@ -256,22 +256,22 @@ async def pong():
     return {"ping": "pong!"}
 
 
-@app.post("/predict", response_model=StockOut, status_code=200)
-def get_prediction(payload: StockIn):
-    train("FB")
-    train("AAPL")
-    train("GOOGL")
-    train("MSFT")
+# @app.post("/predict", response_model=StockOut, status_code=200)
+# def get_prediction(payload: StockIn):
+#     train("FB")
+#     train("AAPL")
+#     train("GOOGL")
+#     train("MSFT")
 
-    ticker = payload.ticker
+#     ticker = payload.ticker
 
-    prediction_list = predict(ticker)
+#     prediction_list = predict(ticker)
 
-    if not prediction_list:
-        raise HTTPException(status_code=400, detail="Model not found.")
+#     if not prediction_list:
+#         raise HTTPException(status_code=400, detail="Model not found.")
 
-    response_object = {"ticker": ticker, "forecast": convert(prediction_list)}
-    return response_object
+#     response_object = {"ticker": ticker, "forecast": convert(prediction_list)}
+#     return response_object
 
 if __name__ == "__main__":
     app.run()
