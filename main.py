@@ -141,6 +141,11 @@ async def fetch_energies():
     lists_dict[energies] = lists_json
     r = re.compile('.* 23:.*')
     daily = [d for d in lists_dict[energies] if re.match(r,d['created_at'])]
+    # daily_energy = []
+    # for i in daily:
+    #     substract = i['energy'] - i-1['energy']
+    #     daily_energy.append({'id': i['id'], 'created_at': i['created_at'], 'energy': substract})
+    # print(daily_energy)
     print(len(daily))
     return daily
 
