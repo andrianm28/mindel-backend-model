@@ -10,11 +10,12 @@ from fastapi import (
 )
 from datetime import datetime
 from pydantic import BaseModel, Field, EmailStr
+from sqlalchemy.sql.elements import True_
 from model import train, convert, predict
 import databases, datetime, uuid, sqlalchemy
 from sqlalchemy import desc
 from typing import List
-import pytz, json
+import pytz, json, re
 
 from starlette.responses import JSONResponse
 from starlette.requests import Request
@@ -123,13 +124,25 @@ async def shutdown():
 
 #     return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
-@app.get("/energies", response_model=List[Energies])
+@app.get("/hourly_energies", response_model=List[Energies])
+async def fetch_energies():
+    query = energies.select().order_by(energies.c.created_at.desc())
+    lists = await database.fetch_all(query)
+    # lists_json = jsonable_encoder(lists)
+    # print(lists_json)
+    return lists
+
+lists_dict = {}
+@app.get("/daily_energies", response_model=List[Energies])
 async def fetch_energies():
     query = energies.select().order_by(energies.c.created_at.desc())
     lists = await database.fetch_all(query)
     lists_json = jsonable_encoder(lists)
-    print(lists_json)
-    return lists
+    lists_dict[energies] = lists_json
+    r = re.compile('.* 23:.*')
+    daily = [d for d in lists_dict[energies] if re.match(r,d['created_at'])]
+    print(len(daily))
+    return daily
 
 @app.get("/monthly_energies")
 async def fetch_monthly_energies():
